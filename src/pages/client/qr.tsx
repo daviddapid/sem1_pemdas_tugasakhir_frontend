@@ -27,7 +27,7 @@ export default function QrPage() {
 		(async () => {
 			setOrder(await getOrderById(orderId!));
 		})();
-	});
+	}, []);
 
 	return (
 		<div className="bg-blue-500 min-h-screen px-5 pt-5 pb-[150px]">
