@@ -1,8 +1,9 @@
-import { Product } from "@/data/product";
+import { Product } from "@/fetching/product";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { NavigateFunction } from "react-router";
-import { cn } from "@/lib/utils";
+import { cn, getImgUrl } from "@/lib/utils";
 import { Star } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 export function CardProduct({
 	product,
@@ -20,7 +21,7 @@ export function CardProduct({
 		>
 			<CardHeader className="flex flex-row justify-center">
 				<img
-					src={product.img}
+					src={getImgUrl(product.img)}
 					className="h-[300px]  object-contain drop-shadow-[0px_10px_9px_#cdcdcd] absolute top-[-120px]"
 				/>
 			</CardHeader>
@@ -53,5 +54,15 @@ export function ListProduct() {
 			</div>
 			<h1 className="text-xl ms-auto">Rp 10.000</h1>
 		</div>
+	);
+}
+
+export function CardProductSkeleton() {
+	return (
+		<Skeleton className="w-[240px] shrink-0 h-full rounded-2xl bg-slate-200 p-5">
+			<Skeleton className="bg-slate-300 w-[85%] h-5 mt-[70%]" />
+			<Skeleton className="bg-slate-300 w-[80%] h-4 mt-3" />
+			<Skeleton className="bg-slate-300 w-[50%] h-5 mt-8" />
+		</Skeleton>
 	);
 }

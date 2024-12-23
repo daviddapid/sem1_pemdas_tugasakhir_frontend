@@ -1,13 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { getSingleProduct } from "@/data/product";
-import { ProductOrder, useCart } from "@/hooks/useCart";
+import { ProductOrder } from "@/entities/product-order.entity";
+import { Product } from "@/entities/product.entity";
+import { getSingleProduct } from "@/fetching/product";
+import { useCart } from "@/hooks/useCart";
 import { ArrowLeft, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
 export default function OrderPage() {
 	const { id } = useParams();
-	const product = getSingleProduct(parseInt(id!));
+	const [product, setProduct] = useState<Product>();
+
+	useEffect(() => {
+		(async () => {
+			setProduct(await getSingleProduct(parseInt(id!)));
+		})();
+	}, []);
 
 	// ==============
 	//    UI Logic
@@ -17,7 +25,7 @@ export default function OrderPage() {
 	const [coffeeHeight, setCoffeeHeight] = useState(30);
 
 	const [qty, setQty] = useState(1);
-	const price = 10000 * qty;
+	const price = product?.price! * qty;
 
 	const sugarY = 255 - sugarHeight;
 	const coffeeY = sugarY - coffeeHeight;
@@ -46,10 +54,10 @@ export default function OrderPage() {
 
 	const handleOrder = () => {
 		const productOrder: ProductOrder = {
-			id: product.id,
-			img: product.img,
-			name: product.name,
-			price: product.price,
+			id: product!.id,
+			img: product!.img,
+			name: product!.name,
+			price: product!.price,
 			qty,
 			sugar: Math.round((sugarHeight / maxHeigtCup) * 100),
 			coffe: Math.round((coffeeHeight / maxHeigtCup) * 100),
@@ -61,13 +69,14 @@ export default function OrderPage() {
 
 	return (
 		<div className="flex flex-col min-h-screen bg-blue-500">
-			<div className="flex justify-between mt-10 px-5">
+			<div className="flex justify-between items-center mt-10 px-5">
 				<Link to={"/" + id}>
 					<ArrowLeft className="text-white" />
 				</Link>
+				<h1 className="text-xl text-white leading-none">{product?.name}</h1>
 				<ShoppingBag className="text-white" />
 			</div>
-			<div className="flex justify-center mt-7">
+			<div className="flex justify-center mt-9">
 				<div className="rounded-full bg-white w-[250px] h-[250px] flex justify-center items-center">
 					<svg
 						className="w-[115px]"

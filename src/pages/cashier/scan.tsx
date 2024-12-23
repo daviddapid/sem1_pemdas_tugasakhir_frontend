@@ -1,26 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableBody, Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ProductOrder } from "@/hooks/useCart";
+import { Order } from "@/entities/order.entity";
+import { getOrderById } from "@/fetching/order-fetch";
+import { getImgUrl } from "@/lib/utils";
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
-
 import CurrencyInput from "react-currency-input-field";
+import Swal from "sweetalert2";
 
 export default function ScanPage() {
-	const [products, setProducts] = useState<ProductOrder[]>([]);
+	const [order, setOrder] = useState<Order>();
 	const [cash, setCash] = useState(0);
-	const totalPrice = products.reduce((total, p) => total + p.price, 0);
+	const totalPrice = order?.products.reduce((total, p) => total + p.price * p.qty, 0) ?? 0;
 	const kembalian = cash - totalPrice;
 
-	const handleScan: (detectedCodes: IDetectedBarcode[]) => void = (result) => {
-		console.log();
-		// const products: ProductOrder[] = JSON.parse(decompressed);
+	const handleScan: (detectedCodes: IDetectedBarcode[]) => void = async (result) => {
+		const order = await getOrderById(result[0].rawValue);
+		setOrder(order);
+	};
 
-		// console.log(products);
-		// console.log(result);
-		setProducts(products);
-		// setIsPaused(true);
+	const handleConfirm = () => {
+		setOrder(undefined);
+		setCash(0);
+		Swal.fire({
+			icon: "success",
+			title: "Transaksi Sukses",
+			toast: true,
+			position: "top-right",
+			showConfirmButton: false,
+			timer: 1500,
+			iconColor: "white",
+			customClass: {
+				popup: "colored-toast",
+			},
+		});
 	};
 
 	return (
@@ -43,11 +57,11 @@ export default function ScanPage() {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{products.map((p, idx) => (
+							{order?.products.map((p, idx) => (
 								<TableRow key={idx}>
 									<TableCell>{idx + 1}</TableCell>
 									<TableCell>
-										<img src={p.img} className="h-[80px]" />
+										<img src={getImgUrl(p.img)} className="h-[80px]" />
 									</TableCell>
 									<TableCell>{p.name}</TableCell>
 									<TableCell>{p.sugar} %</TableCell>
@@ -83,7 +97,8 @@ export default function ScanPage() {
 						id="input-example"
 						name="input-name"
 						placeholder="Please enter a number"
-						defaultValue={cash}
+						// defaultValue={cash}
+						value={cash}
 						className="bg-transparent text-end text-2xl flex-grow font-medium w-full"
 						decimalsLimit={2}
 						prefix="Rp "
@@ -97,7 +112,7 @@ export default function ScanPage() {
 					<h1>Kembalian</h1>
 					<h1 className="font-medium">Rp {kembalian.toLocaleString("IND")}</h1>
 				</div>
-				<Button className="w-full mt-7 " variant={"outline"}>
+				<Button className="w-full mt-7 " variant={"outline"} onClick={handleConfirm}>
 					Confirm
 				</Button>
 			</div>

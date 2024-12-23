@@ -1,27 +1,14 @@
+import { ProductOrder } from "@/entities/product-order.entity";
 import { create } from "zustand";
-
-export type Order = {
-   id: number
-   name: string
-   products: ProductOrder[]
-}
-export type ProductOrder = {
-   id: number
-   name: string
-   qty: number
-   price: number
-   sugar: number
-   coffe: number
-   milk: number
-   img: string
-   createdAt: number
-}
 
 
 interface CartHook {
    products: ProductOrder[],
    add: (product: ProductOrder) => void
    updateQty: (createdAt: number, qty: number) => void
+   updateSugar: (createdAt: number, sugar: number) => void
+   updateCoffe: (createdAt: number, coffe: number) => void
+   updateMilk: (createdAt: number, milk: number) => void
    remove: (createdAt: number) => void
 }
 
@@ -48,12 +35,36 @@ export const useCart = create<CartHook>(
          }
       }),
       remove: (createdAt) => set(state => {
-
          return {
             products: state.products.filter(p => p.createdAt != createdAt)
          }
-      })
-
-
+      }),
+      updateSugar: (createdAt, sugar) => set(state => {
+         const products = state.products.map(p => {
+            if (p.createdAt == createdAt) {
+               p.sugar = sugar
+            }
+            return p
+         })
+         return { products }
+      }),
+      updateCoffe: (createdAt, coffe) => set(state => {
+         const products = state.products.map(p => {
+            if (p.createdAt == createdAt) {
+               p.coffe = coffe
+            }
+            return p
+         })
+         return { products }
+      }),
+      updateMilk: (createdAt, milk) => set(state => {
+         const products = state.products.map(p => {
+            if (p.createdAt == createdAt) {
+               p.milk = milk
+            }
+            return p
+         })
+         return { products }
+      }),
    })
 )

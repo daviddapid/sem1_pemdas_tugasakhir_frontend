@@ -1,10 +1,10 @@
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { ProductOrder, useCart } from "@/hooks/useCart";
-import { cn } from "@/lib/utils";
+import { cn, getImgUrl } from "@/lib/utils";
 
 export function CartList({ product, isShow }: { product: ProductOrder; isShow: boolean }) {
-	const { updateQty, remove } = useCart();
+	const { updateQty, updateSugar, updateCoffe, updateMilk, remove } = useCart();
 
 	const getSubtotalPrice = () => {
 		return product.price * product.qty;
@@ -13,7 +13,7 @@ export function CartList({ product, isShow }: { product: ProductOrder; isShow: b
 	return (
 		<div>
 			<div className="flex items-center h-[150px]">
-				<img src={product.img} className="h-[50%] object-contain" />
+				<img src={getImgUrl(product.img)} className="h-[50%] object-contain" />
 				<div className="h-full flex flex-col justify-center flex-grow ms-7">
 					<h1 className="text-xl capitalize">{product.name}</h1>
 					<h1 className="text-xl font-bold mt-2">Rp {getSubtotalPrice().toLocaleString("IND")}</h1>
@@ -49,15 +49,33 @@ export function CartList({ product, isShow }: { product: ProductOrder; isShow: b
 			<div className={cn(`grid grid-cols-3 gap-3 ${!isShow ? "hidden" : ""}`)}>
 				<div>
 					<p className="capitalize">gula ({product.sugar}%)</p>
-					<input type="range" className="w-full" max={100 / 3} value={product.sugar} />
+					<input
+						type="range"
+						className="w-full"
+						max={100 / 3}
+						value={product.sugar}
+						onChange={(e) => updateSugar(product.createdAt, parseInt(e.target.value))}
+					/>
 				</div>
 				<div>
 					<p className="capitalize">kopi ({product.coffe}%)</p>
-					<input type="range" className="w-full" max={100 / 3} value={product.coffe} />
+					<input
+						type="range"
+						className="w-full"
+						max={100 / 3}
+						value={product.coffe}
+						onChange={(e) => updateCoffe(product.createdAt, parseInt(e.target.value))}
+					/>
 				</div>
 				<div>
 					<p className="capitalize">susu ({product.milk}%)</p>
-					<input type="range" className="w-full" max={100 / 3} value={product.milk} />
+					<input
+						type="range"
+						className="w-full"
+						max={100 / 3}
+						value={product.milk}
+						onChange={(e) => updateMilk(product.createdAt, parseInt(e.target.value))}
+					/>
 				</div>
 			</div>
 		</div>

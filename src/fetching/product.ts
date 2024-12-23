@@ -1,13 +1,18 @@
-export type Product = {
-   id: number
-   name: string
-   rating: number
-   price: number
-   img: string
-   desc: string
-}
+import { Product } from "@/entities/product.entity";
+import { config } from "@/lib/config"
 
-export function getProducts(): Product[] {
+
+
+export async function getProducts(): Promise<Product[]> {
+
+   const response = await fetch(config.baseUrl + "/products")
+   const products = await response.json()
+
+   // console.log(products);
+
+
+   return products;
+
    return [
       { id: 1, name: "Matcha Latte", rating: 5, price: 10000, img: "/src/assets/images/drink-1.png", desc: "Matcha latte adalah minuman yang terbuat dari bubuk matcha dicampur dengan susu cair atau cairan lainnya. Minuman ini memiliki rasa manis dan creamy dengan sedikit rasa pahit dari teh hijau. Matcha latte bisa disajikan panas atau dingin, dan bisa dibeli dalam bentuk cair atau bubuk siap seduh." },
       { id: 2, name: "Vanilla Latte", rating: 5, price: 5000, img: "/src/assets/images/drink-2.png", desc: "Vanilla latte adalah minuman kopi susu yang terbuat dari espresso, susu, dan ekstrak vanila. Minuman ini memiliki rasa yang manis dan creamy, dengan aroma kopi yang kuat dan aroma vanilla yang khas. Vanilla latte biasanya disajikan dalam cangkir latte berukuran sedang." },
@@ -17,6 +22,14 @@ export function getProducts(): Product[] {
    ]
 }
 
-export function getSingleProduct(id: number): Product {
-   return getProducts().filter(p => p.id == id)[0]
+export async function getSingleProduct(id: number): Promise<Product> {
+   // await new Promise(resolve => {
+   //    setTimeout(() => {
+
+   //    }, 1000);
+   // })
+   const response = await fetch(config.baseUrl + "/products/" + id)
+   const product = await response.json()
+
+   return product
 }

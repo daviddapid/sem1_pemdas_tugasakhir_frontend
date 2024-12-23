@@ -7,6 +7,8 @@ import CartPage from "./pages/client/cart";
 // import QrPage from "./pages/client/Qr";
 import ScanPage from "./pages/cashier/scan";
 import QrPage from "./pages/client/qr";
+import AuthGuard from "./pages/cashier/auth-guard";
+import LoginPage from "./pages/cashier/login";
 
 function App() {
 	return (
@@ -20,9 +22,10 @@ function App() {
 				<Route path="/:id" element={<DetailPage />} />
 				<Route path="/order/:id" element={<OrderPage />} />
 
-				<Route path="/cashier" element={<ScanPage />} />
-				{/* <Route path="/admin">
-				</Route> */}
+				<Route path="/cashier" element={<AuthGuard />}>
+					<Route path="/cashier" element={<ScanPage />} />
+				</Route>
+				<Route path="/login" element={<LoginPage />} />
 			</Routes>
 		</BrowserRouter>
 	);

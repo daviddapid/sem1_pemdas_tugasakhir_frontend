@@ -1,44 +1,57 @@
-import { CardProduct } from "@/components/custom/card-product";
-import { Input } from "@/components/ui/input";
-import { getProducts } from "@/data/product";
+import { CardProduct, CardProductSkeleton } from "@/components/custom/card-product";
+import { getProducts, Product } from "@/fetching/product";
 import { ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/swiper-bundle.css";
 
 export default function HomePage() {
-	const products = getProducts();
+	const [loading, setLoading] = useState(true);
+	const [products, setProducts] = useState<Product[]>();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		(async () => {
+			setProducts(await getProducts());
+			setLoading(false);
+		})();
+	}, []);
 
 	return (
 		<div className="min-h-screen">
-			<header className="mb-[150px] px-[20px]">
+			<header className=" px-[20px]">
 				<div className="flex justify-between mt-8 items-center mb-5">
 					<h1 className="text-3xl font-semibold">NgombeanKu</h1>
 					<ShoppingBag />
 				</div>
-				<Input placeholder="search..." className="py-5" />
+				{/* <Input placeholder="search..." className="py-5" /> */}
 			</header>
 
-			{/* <h1 className="text-xl font-semibold mb-3 px-[20px]">Best Seller</h1> */}
-
-			<Swiper
-				spaceBetween={12}
-				slidesPerView={"auto"}
-				onSlideChange={() => console.log("slide change")}
-				onSwiper={(swiper) => console.log(swiper)}
-				direction="horizontal"
-				centeredSlides={true}
-				loop={true}
-				className="overflow-visible"
-			>
-				{products.map((p) => (
-					<SwiperSlide className="w-fit" key={p.id}>
-						<CardProduct product={p} navigate={navigate} />
-					</SwiperSlide>
-				))}
-			</Swiper>
+			{loading ? (
+				<div className="flex h-[300px] mt-[70px] justify-center gap-5">
+					<CardProductSkeleton />
+					<CardProductSkeleton />
+					<CardProductSkeleton />
+				</div>
+			) : (
+				// {/* </div> */}
+				<Swiper
+					spaceBetween={12}
+					slidesPerView={"auto"}
+					direction="horizontal"
+					centeredSlides={true}
+					loop={true}
+					className="overflow-visible mt-[155px]"
+				>
+					{products?.map((p) => (
+						<SwiperSlide className="w-fit" key={p.id}>
+							<CardProduct product={p} navigate={navigate} />
+						</SwiperSlide>
+					))}
+				</Swiper>
+			)}
 		</div>
 	);
 }

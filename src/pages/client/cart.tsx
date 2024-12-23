@@ -10,9 +10,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Order, useCart } from "@/hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { config } from "@/lib/config";
+import { Order } from "@/entities/order.entity";
 
 export default function CartPage() {
 	const { products } = useCart();
@@ -26,19 +28,36 @@ export default function CartPage() {
 	};
 
 	const handleCheckout = async () => {
+		console.log(Date.now());
+
 		const order: Order = {
-			id: Date.now(),
+			id: Date.now().toString(),
 			name,
 			products,
 		};
 
-		const json = JSON.stringify(order);
+		const body = JSON.stringify(order);
 
-		// await fetch(`http://localhost:8080/order`, {
-		// 	body: json,
-		// });
+		const response = await fetch(`${config.baseUrl}/checkout`, {
+			body: body,
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		const json = await response.json();
+		sessionStorage.setItem("orderId", json.orderId);
 
 		navigate("/qr");
+	};
+
+	const handleShowDetail = (index: number) => {
+		if (indexShow) {
+			indexShow == index ? setIndexShow(null) : setIndexShow(index);
+		} else {
+			setIndexShow(index);
+		}
 	};
 
 	return (
@@ -50,18 +69,12 @@ export default function CartPage() {
 					{/* list order detail (products) */}
 					<div className="flex flex-col ">
 						{products.map((p, idx) => (
-							<>
-								<div
-									key={idx}
-									onClick={() => {
-										setIndexShow(idx);
-										console.log(idx == indexShow);
-									}}
-								>
+							<div key={idx}>
+								<div onClick={() => handleShowDetail(idx)}>
 									<CartList product={p} isShow={indexShow == idx} />
 								</div>
 								<hr />
-							</>
+							</div>
 						))}
 					</div>
 
@@ -73,15 +86,13 @@ export default function CartPage() {
 
 					{/* dialog checkout */}
 					<Dialog>
-						<DialogTrigger className="w-full">
+						<DialogTrigger className="w-full" asChild>
 							<Button className="w-full">Checkout</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
 								<DialogTitle className="capitalize">are you sure to process the order ?</DialogTitle>
-								<DialogDescription>
-									<p>Please enter your name in the field below</p>
-								</DialogDescription>
+								<DialogDescription>Please enter your name in the field below</DialogDescription>
 							</DialogHeader>
 							<Input
 								placeholder="your name"
