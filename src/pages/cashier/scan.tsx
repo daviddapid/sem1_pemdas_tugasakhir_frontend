@@ -21,20 +21,36 @@ export default function ScanPage() {
 	};
 
 	const handleConfirm = () => {
-		setOrder(undefined);
-		setCash(0);
-		Swal.fire({
-			icon: "success",
-			title: "Transaksi Sukses",
-			toast: true,
-			position: "top-right",
-			showConfirmButton: false,
-			timer: 1500,
-			iconColor: "white",
-			customClass: {
-				popup: "colored-toast",
-			},
-		});
+		if (cash < totalPrice) {
+			Swal.fire({
+				icon: "error",
+				title: "Transaksi Gagal",
+				toast: true,
+				text: "pastikan nominal pembayaran telah sesuai",
+				position: "top-right",
+				showConfirmButton: false,
+				timer: 1500,
+				iconColor: "white",
+				customClass: {
+					popup: "colored-toast",
+				},
+			});
+		} else {
+			setOrder(undefined);
+			setCash(0);
+			Swal.fire({
+				icon: "success",
+				title: "Transaksi Sukses",
+				toast: true,
+				position: "top-right",
+				showConfirmButton: false,
+				timer: 1500,
+				iconColor: "white",
+				customClass: {
+					popup: "colored-toast",
+				},
+			});
+		}
 	};
 
 	return (
