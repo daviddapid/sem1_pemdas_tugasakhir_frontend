@@ -182,9 +182,6 @@ export default function OrderPage() {
 						order
 					</Button>
 				</Link>
-				<Button className="w-full" variant={"outline"}>
-					order lagi
-				</Button>
 			</div>
 		</div>
 	);
