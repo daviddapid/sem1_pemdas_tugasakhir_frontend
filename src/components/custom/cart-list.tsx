@@ -1,7 +1,8 @@
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { ProductOrder, useCart } from "@/hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { cn, getImgUrl } from "@/lib/utils";
+import { ProductOrder } from "@/entities/product-order.entity";
 
 export function CartList({ product, isShow }: { product: ProductOrder; isShow: boolean }) {
 	const { updateQty, updateSugar, updateCoffe, updateMilk, remove } = useCart();

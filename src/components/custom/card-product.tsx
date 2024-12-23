@@ -1,9 +1,9 @@
-import { Product } from "@/fetching/product";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { NavigateFunction } from "react-router";
 import { cn, getImgUrl } from "@/lib/utils";
 import { Star } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import { Product } from "@/entities/product.entity";
 
 export function CardProduct({
 	product,

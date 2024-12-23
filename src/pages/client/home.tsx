@@ -1,5 +1,6 @@
 import { CardProduct, CardProductSkeleton } from "@/components/custom/card-product";
-import { getProducts, Product } from "@/fetching/product";
+import { Product } from "@/entities/product.entity";
+import { getProducts } from "@/fetching/product";
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
